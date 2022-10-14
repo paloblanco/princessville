@@ -56,8 +56,8 @@ function sprite:init()
     local s = love.graphics.newImage(self.path)
     local w = s:getWidth()
     local h = s:getHeight()
-    local wscale = 32 / w
-    local hscale = 64 / h
+    local wscale = 64 / w
+    local hscale = 128 / h
     self.texture = s
     self.w = w
     self.h = h
@@ -67,22 +67,45 @@ function sprite:init()
     self.y = 0
 end
 
-function sprite:draw()
-    love.graphics.draw(self.texture,self.x,self.y,0,self.wscale,self.hscale)
+function sprite:draw(x,y)
+    love.graphics.setColor(0, 0, 0, 1)
+    for xx=-1,1,1 do
+        for yy=-1,1,1 do
+            love.graphics.draw(self.texture,x+xx,y+yy,0,self.wscale,self.hscale)
+        end
+    end
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.draw(self.texture,x,y,0,self.wscale,self.hscale)
 end
 
 function love.load()
     frostCastle = background:new{path="art/raw/frostcastle.png"}
     frostP = sprite:new{"art/working/frost_sprite.png"}
+
+    player = {}
+    player.x = 200
+    player.y = 300
+    player.speed = 128
 end
 
 function love.update(dt)
-
+    if love.keyboard.isDown("left") then
+        player.x = player.x - player.speed * dt
+    end
+    if love.keyboard.isDown("right") then
+        player.x = player.x + player.speed * dt
+    end
+    if love.keyboard.isDown("up") then
+        player.y = player.y - player.speed * dt
+    end
+    if love.keyboard.isDown("down") then
+        player.y = player.y + player.speed * dt
+    end
 end
 
 function love.draw()
     -- love.graphics.print("Hello World", 400, 300)
     -- love.graphics.draw(frostCastle,0,0,0,1,1)
     frostCastle:draw()
-    frostP:draw()
+    frostP:draw(player.x,player.y)
 end
