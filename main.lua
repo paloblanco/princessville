@@ -38,15 +38,16 @@ function background:init()
     local h = bg:getHeight()
     local wscale = love.graphics.getWidth() / w
     local hscale = love.graphics.getHeight() / h
+    self.scale = math.min(wscale,hscale)
+    self.xoff = math.floor((love.graphics.getWidth() - w*self.scale)/2)
+    self.yoff = math.floor((love.graphics.getHeight() - h*self.scale)/2)
     self.texture = bg
     self.w = w
     self.h = h
-    self.wscale = wscale
-    self.hscale = hscale
 end
 
 function background:draw()
-    love.graphics.draw(self.texture,0,0,0,self.wscale,self.hscale)
+    love.graphics.draw(self.texture,self.xoff,self.yoff,0,self.scale,self.scale)
 end
 
 sprite = thing:new()
@@ -79,7 +80,8 @@ function sprite:draw(x,y)
 end
 
 function love.load()
-    frostCastle = background:new{path="art/raw/frostcastle.png"}
+    love.window.setTitle("Princessville")
+    frostCastle = background:new{path="art/working/frostcastle.png"}
     frostP = sprite:new{"art/working/frost_sprite.png"}
 
     player = {}
@@ -104,8 +106,11 @@ function love.update(dt)
 end
 
 function love.draw()
-    -- love.graphics.print("Hello World", 400, 300)
+    
     -- love.graphics.draw(frostCastle,0,0,0,1,1)
     frostCastle:draw()
-    frostP:draw(player.x,player.y)
+    frostP:draw(math.floor(player.x),math.floor(player.y))
+    love.graphics.setColor(0, 0, 0, 1)
+    love.graphics.print(love.graphics.getDPIScale(), 400, 50)
+    love.graphics.setColor(1,1,1, 1)
 end
